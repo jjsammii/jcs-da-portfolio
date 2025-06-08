@@ -3,6 +3,7 @@ from streamlit_lottie import st_lottie
 import requests
 #import plotly.graph_objects as go
 from PIL import Image
+import os
 
 
 st.set_page_config(
@@ -23,7 +24,10 @@ lottie_coding = load_lottieurl(
     "https://assets7.lottiefiles.com/private_files/lf30_ijvfbn98.json")
 
 # ---- LOAD Image -----
-techtalk = Image.open("images/Video.PNG")
+if os.path.exists("images/Video.PNG"):
+    techtalk = Image.open("images/Video.PNG")
+else:
+    st.warning("Video.PNG not found in images directory.")
 
 # ----- Load CSS
 
