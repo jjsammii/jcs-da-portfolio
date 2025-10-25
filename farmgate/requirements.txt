@@ -1,6 +1,0 @@
-Pillow
-plotly
-requests
-streamlit
-streamlit_lottie
-streamlit_extras
