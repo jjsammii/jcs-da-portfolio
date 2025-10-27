@@ -5,3 +5,4 @@ enableXsrfProtection = false
 
 [theme]
 base = "light"
+
