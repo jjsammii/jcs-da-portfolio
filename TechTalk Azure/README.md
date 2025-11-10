@@ -147,6 +147,3 @@ It covers business context, data orchestration, model training & evaluation, sec
 This README and session content are provided for educational and portfolio purposes.
 © Jermaine Samuels — Fujitsu Caribbean. All rights reserved.
 
----
-
-Would you like me to also include a short “**How to Add This to Your Portfolio**” section (e.g., embedding the YouTube thumbnail and GitHub badge for presentation)? It would make your GitHub page more visually engaging.

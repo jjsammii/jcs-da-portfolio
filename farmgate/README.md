@@ -132,6 +132,4 @@ Contributions, bug reports, and feature suggestions are welcome!
 🎥 **YouTube:** [Tech Expert Hour](https://www.youtube.com/watch?v=mWW-OsELCn0&t=1400s)
 🌐 **Live Dashboard:** [https://jamis-farmgate.streamlit.app/](https://jamis-farmgate.streamlit.app/)
 
----
 
-Would you like me to also include a **“Getting Started” section** (with environment setup, installation, and run commands) so the README looks ready for GitHub open-source publication?

@@ -134,6 +134,3 @@ MSc. Data Science, University of the West Indies
 📧 [jc.samuels21@gmail.com](mailto:jc.samuels21@gmail.com)
 🔗 [GitHub Portfolio](https://github.com/jjsammii)
 
----
-
-Would you like me to add a **“Setup and Reproducibility Guide”** section (detailing how to recreate the training and dashboard environments using Anaconda or Docker)? That would make this repository fully replicable for research/public viewers.
