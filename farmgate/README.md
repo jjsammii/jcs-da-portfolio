@@ -1,7 +1,3 @@
-Here’s an expanded, more descriptive version of your **README.md** file that now includes a direct link to your live FarmGate data analytics website at **[https://jamis-farmgate.streamlit.app/](https://jamis-farmgate.streamlit.app/)**, and provides a fuller narrative suitable for GitHub visitors, recruiters, or collaborators.
-
----
-
 # 🧑‍🌾 FarmGate Dashboard
 
 **FarmGate Dashboard** is an interactive data analytics web application for visualizing, analyzing, and forecasting agricultural commodity data at the **farmgate level** in Jamaica.
