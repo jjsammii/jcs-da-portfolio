@@ -1,1005 +1,141 @@
-modify my Read me file to include that the data analytics wwebsite may be located at https://jamis-farmgate.streamlit.app/ and make it more expansive and elaborative. This is the README file # 🧑‍🌾 FarmGate Dashboard
+Here’s an expanded, more descriptive version of your **README.md** file that now includes a direct link to your live FarmGate data analytics website at **[https://jamis-farmgate.streamlit.app/](https://jamis-farmgate.streamlit.app/)**, and provides a fuller narrative suitable for GitHub visitors, recruiters, or collaborators.
 
-This project presents a fully interactive dashboard for visualizing agricultural commodity data at the farmgate level. The data was extracted from the [JAMIS (Jamaica Agricultural Market Information System)](https://jamis.gov.jm) website using Python, processed for analysis, and rendered in an intuitive web-based interface.
+---
+
+# 🧑‍🌾 FarmGate Dashboard
+
+**FarmGate Dashboard** is an interactive data analytics web application for visualizing, analyzing, and forecasting agricultural commodity data at the **farmgate level** in Jamaica.
+The platform is designed to empower **farmers, policymakers, researchers, and agribusiness stakeholders** with data-driven insights into agricultural market trends, leveraging open data from the [**Jamaica Agricultural Market Information System (JAMIS)**](https://jamis.gov.jm).
+
+🌐 **Live Demo:** [https://jamis-farmgate.streamlit.app/](https://jamis-farmgate.streamlit.app/)
+
+---
 
 ## 📊 Project Overview
 
-The **FarmGate Dashboard** provides insights into:
-- Weekly and monthly price trends of major agricultural commodities
-- Regional comparisons of farmgate prices
-- Seasonal price fluctuations
-- Data filtering by parish, commodity type, and time range
+The **FarmGate Dashboard** automates the extraction, cleaning, and visualization of market data from the JAMIS website.
+It enables users to explore patterns in commodity pricing, availability, and quality across parishes and time periods.
+The platform offers both **descriptive analytics** (trends, comparisons, visual insights) and **predictive analytics** (forecasting crop prices up to three years ahead).
 
-This tool is intended to support farmers, policymakers, researchers, and agribusiness professionals in making data-driven decisions.
+### Key Capabilities
 
-## 🛠️ Features
+* 📅 **Weekly & Monthly Price Trends:** Track price variations of major commodities over time.
+* 🌍 **Regional Analysis:** Compare farmgate prices across Jamaica’s parishes.
+* 📈 **Seasonal Fluctuations:** Identify recurring trends tied to crop seasons or climate.
+* 🔍 **Advanced Filtering:** Filter by parish, commodity type, grade, and supply level.
+* 🤖 **Predictive Forecasts:** View AI-generated projections for future crop prices.
 
-- 🐍 **Automated Web Scraping**: Extracts and updates data from JAMIS using Python and BeautifulSoup
-- 📈 **Dynamic Visualizations**: Interactive charts and graphs powered by Plotly/Dash or Streamlit
-- 🧹 **Data Cleaning Pipeline**: Handles formatting inconsistencies and missing values
-- 🌎 **Geographic Filters**: Analyze commodity prices across different parishes
-- ⏱ **Time-Series Analysis**: Observe trends over custom time windows
+---
 
-## 🗂️ Tech Stack
+## 🧠 Analytical Objectives
 
-- **Python** (Pandas, BeautifulSoup, Requests)
-- **Streamlit** or **Dash** for the dashboard interface
-- **Plotly** / **Altair** for data visualization
-- **GitHub Actions** *(optional)*: for automated scraping and dashboard updates
+The project aims to:
 
-## 📁 Project Structure
+* Enhance **data accessibility** for agricultural stakeholders.
+* Promote **evidence-based decision making** in the agri-sector.
+* Provide **predictive insights** for better crop planning and price stabilization.
+* Serve as a **learning resource** for data science, web scraping, and visualization enthusiasts.
+
+---
+
+## 🛠️ Core Features
+
+| Feature                           | Description                                                                                       |
+| --------------------------------- | ------------------------------------------------------------------------------------------------- |
+| 🐍 **Automated Data Extraction**  | Web scraper built in Python (BeautifulSoup & Requests) to pull updated commodity data from JAMIS. |
+| 🧹 **Data Cleaning Pipeline**     | Cleans and standardizes data, handles missing values, and prepares datasets for analysis.         |
+| 📊 **Interactive Visualizations** | Built with Plotly and Streamlit for real-time data exploration.                                   |
+| 🗺️ **Geospatial Analysis**       | Includes parish-level choropleth maps and comparative visuals.                                    |
+| 📆 **Time-Series Analysis**       | Displays price trends, seasonal shifts, and monthly averages.                                     |
+| 🤖 **Predictive Analytics**       | Forecast models project crop prices for upcoming years (2023–2025).                               |
+| 📨 **Contact Form**               | Integrated form for user feedback and collaboration inquiries.                                    |
+
+---
+
+## 🖥️ Tech Stack
+
+* **Language:** Python
+* **Frontend:** Streamlit (deployed web interface)
+* **Data Visualization:** Plotly, Altair
+* **Data Handling:** Pandas, NumPy
+* **Web Scraping:** BeautifulSoup, Requests
+* **Styling:** Custom CSS and Streamlit Lottie animations
+* **Automation:** GitHub Actions (optional) for scheduled data refreshes and deployment
+
+---
+
+## 🗂️ Project Structure
+
+```
 farmgate-dashboard/
 │
-├── data/ # Cleaned datasets for dashboard use
-├── notebooks/ # Data extraction and exploration notebooks
-├── src/ # Python scripts for scraping and preprocessing
-│ ├── scraper.py
-│ └── clean_data.py
-├── dashboard/ # Dashboard implementation (Streamlit or Dash)
-│ └── home.py
-├── requirements.txt
-└── README.md and these are the streamlit codes Home.py # farmgate/Home.py
-import streamlit as st
-from streamlit_lottie import st_lottie
-import requests
-from pathlib import Path
-from typing import Optional
-from PIL import Image
-import os
-
-# -------------------- App config --------------------
-st.set_page_config(page_title="Home", layout="wide")
-
-# -------------------- Single-file path & asset helpers --------------------
-BASE_DIR    = Path(__file__).resolve().parent              # .../jcs-da-portfolio/farmgate
-REPO_ROOT   = BASE_DIR.parent                              # .../jcs-da-portfolio
-IMAGES_DIRS = [BASE_DIR / "images", REPO_ROOT / "images"]  # try farmgate/images, then repo/images
-STYLE_DIRS  = [BASE_DIR / "style", REPO_ROOT / "style"]    # try farmgate/style, then repo/style
-
-def find_case_insensitive(directory: Path, filename: str) -> Optional[Path]:
-    """Find filename in directory ignoring case; return Path or None."""
-    try:
-        target = filename.lower()
-        if directory.exists():
-            for p in directory.iterdir():
-                if p.name.lower() == target:
-                    return p
-    except Exception:
-        pass
-    return None
-
-def open_image_safe(filename: str) -> Optional[Image.Image]:
-    """Open an image by checking multiple candidate directories; warn if missing."""
-    for d in IMAGES_DIRS:
-        p = find_case_insensitive(d, filename)
-        if p and p.is_file():
-            try:
-                return Image.open(p)
-            except Exception as e:
-                st.warning(f"Failed to open image '{p.name}' in '{d.relative_to(REPO_ROOT)}': {e}")
-                return None
-    tried = ", ".join(str(d.relative_to(REPO_ROOT)) for d in IMAGES_DIRS if d.exists())
-    st.warning(f"Image '{filename}' not found. Searched: {tried or '(no image dirs present)'}")
-    return None
-
-def inject_local_css(filename: str) -> None:
-    """Inject CSS from the first directory where it exists; warn if missing."""
-    for d in STYLE_DIRS:
-        p = d / filename
-        if p.is_file():
-            try:
-                st.markdown(f"<style>{p.read_text()}</style>", unsafe_allow_html=True)
-                return
-            except Exception as e:
-                st.warning(f"Failed to load CSS '{p}': {e}")
-                return
-    tried = ", ".join(str(d.relative_to(REPO_ROOT)) for d in STYLE_DIRS if d.exists())
-    st.warning(f"CSS '{filename}' not found. Searched: {tried or '(no style dirs present)'}")
-
-# -------------------- Network helpers --------------------
-def load_lottieurl(url: str):
-    """Safely load a Lottie JSON from URL (TLS verify on)."""
-    try:
-        r = requests.get(url, timeout=10)
-        if r.status_code == 200:
-            return r.json()
-    except Exception:
-        pass
-    return None
-
-# -------------------- Debug panel (toggle with ?debug=1) --------------------
-debug = st.query_params.get("debug", ["0"])[0] in {"1", "true", "yes"}
-if debug:
-    st.info("Debug panel enabled (remove ?debug=1 to hide).")
-    st.write("Repo root:", REPO_ROOT.as_posix())
-    st.write("Base dir (farmgate):", BASE_DIR.as_posix())
-    st.write("CWD:", Path.cwd().as_posix())
-    st.write("IMAGES_DIRS:", [p.as_posix() for p in IMAGES_DIRS])
-    st.write("STYLE_DIRS:", [p.as_posix() for p in STYLE_DIRS])
-    for d in IMAGES_DIRS:
-        st.write(f"Contents of {d.relative_to(REPO_ROOT) if d.exists() else d}:", 
-                 [p.name for p in d.glob("*")] if d.exists() else "DIR MISSING")
-    for d in STYLE_DIRS:
-        st.write(f"Contents of {d.relative_to(REPO_ROOT) if d.exists() else d}:", 
-                 [p.name for p in d.glob("*")] if d.exists() else "DIR MISSING")
-
-# -------------------- Assets --------------------
-lottie_coding = load_lottieurl(
-    "https://assets7.lottiefiles.com/private_files/lf30_ijvfbn98.json"
-)
-
-# Case-insensitive load; looks in farmgate/images then repo/images
-techtalk = open_image_safe("Video.PNG")
-
-# CSS from farmgate/style or repo/style
-inject_local_css("style.css")
-
-# -------------------- UI --------------------
-st.title("Welcome to Farmgate Dashboard")
-st.write("---")
-st.sidebar.success("Select a Report Above.")
-
-left_column, right_column = st.columns(2)
-with left_column:
-    st.write(
-        "This dashboard showcases reports in relation to Farmgate data available on Jamis Website "
-        "[Web link](https://www.ja-mis.com/companionsite/reportsarchive.aspx)"
-    )
-    st.write(
-        "A prediction report was added to forecast Crop Prices across Jamaica for the next three years (2023 - 2025) "
-        "as the last data extracted was done December 2022"
-    )
-    st.write("**👈 Select a Report from the sidebar menu options and choose the appropriate filters below")
-    st.markdown(
-        """
-        ### Please see details of each dash board listed below?
-        - Article: Describes Basic Streamlit deployment, data collection and visualization for JAMIS farmgate data.
-        - Dashboard: Interactive dashboard that allows users to manipulate and visualize datasets.
-        - Prediction Report: Contains prediction prices for crops for each month with the ability to 
-          filter results based on year and parish.
-        """
-    )
-with right_column:
-    st_lottie(lottie_coding, height=400, key="crops")
-
-with st.container():
-    st.write("##")
-    st.write("##")
-    st.write("##")
-    st.write("---")
-    st.header("Youtube Expert Hour")
-    st.write("##")
-    image_column, text_column = st.columns((1, 2))
-    with image_column:
-        if techtalk:
-            st.image(techtalk)
-    with text_column:
-        st.subheader("Tech Expert Hour")
-        st.write(
-            """This Tech Expert illustration shows how to establish data pipelines within the azure cloud platform. 
-               In this illustration I'll show you how to build data pipelines and more using azure data factory"""
-        )
-        st.markdown("[Watch Now...](https://www.youtube.com/watch?v=mWW-OsELCn0&t=1400s)")
-
-# ---- CONTACT ----
-with st.container():
-    st.write("---")
-    st.header("Contact Form")
-    st.write("##")
-    contact_form = """
-    <form action="https://formsubmit.co/jc.samuels21@gmail.com" method="POST">
-     <input type="hidden" name="_captcha" value="false">
-     <input type="text" name="name" placeholder="Your name" required>
-     <input type="email" name="email" placeholder="Your email" required>
-     <textarea name="message" placeholder="Your message here" required></textarea>
-     <button type="submit">Send</button>
-    </form>
-    """
-
-left_column, right_column = st.columns(2)
-with left_column:
-    st.markdown(contact_form, unsafe_allow_html=True)
-with right_column:
-    st.empty()
-
-# ---- Hide Streamlit chrome ----
-st.markdown(
-    """
-    <style>
-      # MainMenu {visibility: hidden;}
-      footer {visibility: hidden;}
-      header {visibility: hidden;}
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-, the following are the pages folder code  Article.py # farmgate/Home.py
-import streamlit as st
-from streamlit_lottie import st_lottie
-import requests
-from pathlib import Path
-from typing import Optional
-from PIL import Image
-import os
-
-# -------------------- App config --------------------
-st.set_page_config(page_title="Home", layout="wide")
-
-# -------------------- Single-file path & asset helpers --------------------
-BASE_DIR    = Path(__file__).resolve().parent              # .../jcs-da-portfolio/farmgate
-REPO_ROOT   = BASE_DIR.parent                              # .../jcs-da-portfolio
-IMAGES_DIRS = [BASE_DIR / "images", REPO_ROOT / "images"]  # try farmgate/images, then repo/images
-STYLE_DIRS  = [BASE_DIR / "style", REPO_ROOT / "style"]    # try farmgate/style, then repo/style
-
-def find_case_insensitive(directory: Path, filename: str) -> Optional[Path]:
-    """Find filename in directory ignoring case; return Path or None."""
-    try:
-        target = filename.lower()
-        if directory.exists():
-            for p in directory.iterdir():
-                if p.name.lower() == target:
-                    return p
-    except Exception:
-        pass
-    return None
-
-def open_image_safe(filename: str) -> Optional[Image.Image]:
-    """Open an image by checking multiple candidate directories; warn if missing."""
-    for d in IMAGES_DIRS:
-        p = find_case_insensitive(d, filename)
-        if p and p.is_file():
-            try:
-                return Image.open(p)
-            except Exception as e:
-                st.warning(f"Failed to open image '{p.name}' in '{d.relative_to(REPO_ROOT)}': {e}")
-                return None
-    tried = ", ".join(str(d.relative_to(REPO_ROOT)) for d in IMAGES_DIRS if d.exists())
-    st.warning(f"Image '{filename}' not found. Searched: {tried or '(no image dirs present)'}")
-    return None
-
-def inject_local_css(filename: str) -> None:
-    """Inject CSS from the first directory where it exists; warn if missing."""
-    for d in STYLE_DIRS:
-        p = d / filename
-        if p.is_file():
-            try:
-                st.markdown(f"<style>{p.read_text()}</style>", unsafe_allow_html=True)
-                return
-            except Exception as e:
-                st.warning(f"Failed to load CSS '{p}': {e}")
-                return
-    tried = ", ".join(str(d.relative_to(REPO_ROOT)) for d in STYLE_DIRS if d.exists())
-    st.warning(f"CSS '{filename}' not found. Searched: {tried or '(no style dirs present)'}")
-
-# -------------------- Network helpers --------------------
-def load_lottieurl(url: str):
-    """Safely load a Lottie JSON from URL (TLS verify on)."""
-    try:
-        r = requests.get(url, timeout=10)
-        if r.status_code == 200:
-            return r.json()
-    except Exception:
-        pass
-    return None
-
-# -------------------- Debug panel (toggle with ?debug=1) --------------------
-debug = st.query_params.get("debug", ["0"])[0] in {"1", "true", "yes"}
-if debug:
-    st.info("Debug panel enabled (remove ?debug=1 to hide).")
-    st.write("Repo root:", REPO_ROOT.as_posix())
-    st.write("Base dir (farmgate):", BASE_DIR.as_posix())
-    st.write("CWD:", Path.cwd().as_posix())
-    st.write("IMAGES_DIRS:", [p.as_posix() for p in IMAGES_DIRS])
-    st.write("STYLE_DIRS:", [p.as_posix() for p in STYLE_DIRS])
-    for d in IMAGES_DIRS:
-        st.write(f"Contents of {d.relative_to(REPO_ROOT) if d.exists() else d}:", 
-                 [p.name for p in d.glob("*")] if d.exists() else "DIR MISSING")
-    for d in STYLE_DIRS:
-        st.write(f"Contents of {d.relative_to(REPO_ROOT) if d.exists() else d}:", 
-                 [p.name for p in d.glob("*")] if d.exists() else "DIR MISSING")
-
-# -------------------- Assets --------------------
-lottie_coding = load_lottieurl(
-    "https://assets7.lottiefiles.com/private_files/lf30_ijvfbn98.json"
-)
-
-# Case-insensitive load; looks in farmgate/images then repo/images
-techtalk = open_image_safe("Video.PNG")
-
-# CSS from farmgate/style or repo/style
-inject_local_css("style.css")
-
-# -------------------- UI --------------------
-st.title("Welcome to Farmgate Dashboard")
-st.write("---")
-st.sidebar.success("Select a Report Above.")
-
-left_column, right_column = st.columns(2)
-with left_column:
-    st.write(
-        "This dashboard showcases reports in relation to Farmgate data available on Jamis Website "
-        "[Web link](https://www.ja-mis.com/companionsite/reportsarchive.aspx)"
-    )
-    st.write(
-        "A prediction report was added to forecast Crop Prices across Jamaica for the next three years (2023 - 2025) "
-        "as the last data extracted was done December 2022"
-    )
-    st.write("**👈 Select a Report from the sidebar menu options and choose the appropriate filters below")
-    st.markdown(
-        """
-        ### Please see details of each dash board listed below?
-        - Article: Describes Basic Streamlit deployment, data collection and visualization for JAMIS farmgate data.
-        - Dashboard: Interactive dashboard that allows users to manipulate and visualize datasets.
-        - Prediction Report: Contains prediction prices for crops for each month with the ability to 
-          filter results based on year and parish.
-        """
-    )
-with right_column:
-    st_lottie(lottie_coding, height=400, key="crops")
-
-with st.container():
-    st.write("##")
-    st.write("##")
-    st.write("##")
-    st.write("---")
-    st.header("Youtube Expert Hour")
-    st.write("##")
-    image_column, text_column = st.columns((1, 2))
-    with image_column:
-        if techtalk:
-            st.image(techtalk)
-    with text_column:
-        st.subheader("Tech Expert Hour")
-        st.write(
-            """This Tech Expert illustration shows how to establish data pipelines within the azure cloud platform. 
-               In this illustration I'll show you how to build data pipelines and more using azure data factory"""
-        )
-        st.markdown("[Watch Now...](https://www.youtube.com/watch?v=mWW-OsELCn0&t=1400s)")
-
-# ---- CONTACT ----
-with st.container():
-    st.write("---")
-    st.header("Contact Form")
-    st.write("##")
-    contact_form = """
-    <form action="https://formsubmit.co/jc.samuels21@gmail.com" method="POST">
-     <input type="hidden" name="_captcha" value="false">
-     <input type="text" name="name" placeholder="Your name" required>
-     <input type="email" name="email" placeholder="Your email" required>
-     <textarea name="message" placeholder="Your message here" required></textarea>
-     <button type="submit">Send</button>
-    </form>
-    """
-
-left_column, right_column = st.columns(2)
-with left_column:
-    st.markdown(contact_form, unsafe_allow_html=True)
-with right_column:
-    st.empty()
-
-# ---- Hide Streamlit chrome ----
-st.markdown(
-    """
-    <style>
-      # MainMenu {visibility: hidden;}
-      footer {visibility: hidden;}
-      header {visibility: hidden;}
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-, Analytics.py import pandas as pd
-import streamlit as st
-from streamlit_extras.metric_cards import style_metric_cards
-import plotly.express as px
-import plotly.graph_objects as go
-import json
-from PIL import Image
-
-
-st.set_page_config(page_title="Farmgate Analytics",
-                   layout="wide")
-
-# ---- LOAD IMAGE -----
-techtalk = Image.open("images/Video.PNG")
-
-# ----- Load CSS
-
-
-def local_css(file_name):
-    with open(file_name) as f:
-        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-
-
-local_css("style/style.css")
-
-
-st.title("Welcome to Farmgate Dashboard")
-
-st.write("---")
-
-df_ac = pd.read_csv("data/actual.csv")
-
-# -------------------------Initial------------------------------------
-
-# Convert the data type of column 'Date' from string (YYYY/MM/DD) to datetime64
-df_ac["price_date"] = pd.to_datetime(df_ac["price_date"], format="%m/%d/%Y")
-df_ac["price_date"] = df_ac["price_date"].dt.date
-
-# extracting dates
-start_date = df_ac["price_date"].min()
-stop_date = df_ac["price_date"].max()
-
-parish_list = [i for i in df_ac['parish'].unique()]
-parish_list.sort(reverse=False)
-
-category_list = [i for i in df_ac['Category'].unique()]
-category_list.sort(reverse=False)
-
-commodity_list = [i for i in df_ac['commodity'].unique()]
-commodity_list.sort(reverse=False)
-
-supply_list = [i for i in df_ac['supply'].unique()]
-supply_list.sort(reverse=False)
-
-grade_list = [i for i in df_ac['grade'].unique()]
-grade_list.sort(reverse=False)
-
-
-# ------ SIDEBAR -------------------
-st.sidebar.header("Please Filter Here:")
-period = st.sidebar.slider(f"Date Range:", value=(
-    start_date, stop_date), format="YYYY/MMM", label_visibility="collapsed")
-
-parish = st.sidebar.multiselect(
-    "Parishes", options=parish_list, default=parish_list)
-
-category = st.sidebar.multiselect(
-    "Crop Type", options=category_list, default=category_list)
-
-supply = st.sidebar.multiselect(
-    "Supply", options=supply_list, default=supply_list)
-
-grade = st.sidebar.multiselect("Grade", options=grade_list, default=grade_list)
-
-if (period == []) | (parish == []) | (category == []) | (supply == []) | (grade == []):
-    st.error("Please select at least one value for each drop down menu options")
-else:
-    df = df_ac.query(
-        # '(price_date >= @period[0] & price_date <= @period[1]) | price_date >= @period[0] & parish == @parish & Category ==@category & supply ==@supply & grade ==@grade'
-        '(price_date >= @period[0] & price_date <= @period[1]) & (parish == @parish) & (Category ==@category) & (supply ==@supply) & (grade ==@grade)')
-
-    commodity = st.sidebar.multiselect(
-        "Crop Name", options=commodity_list, default=commodity_list)
-
-    df = df.query('commodity ==@commodity')
-
-    df = df.round({"Actual_Price": 2})
-
-    cards1, cards2, cards3, cards4, cards5 = st.columns(5)
-
-    cards_metric_df = df.groupby(["Category"])[
-        'Actual_Price'].mean().reset_index()
-
-    def get_val(dframe, lst):
-        if len(lst) == 0:
-            val = 0
-        else:
-            val = dframe.Actual_Price.values[0]
-            val = round(val, 2)
-        return val
-
-    fruits = cards_metric_df.loc[cards_metric_df["Category"] == "Fruit"]
-    fruits_list = fruits.Actual_Price.values
-    fruits_val = get_val(fruits, fruits_list)
-
-    herbs = cards_metric_df.loc[cards_metric_df["Category"]
-                                == "Herbs and Spices"]
-    herbs_list = herbs.Actual_Price.values
-    herbs_val = get_val(herbs, herbs_list)
-
-    legumes = cards_metric_df.loc[cards_metric_df["Category"] == "Legumes"]
-    legumes_list = legumes.Actual_Price.values
-    legumes_val = get_val(legumes, legumes_list)
-
-    roots = cards_metric_df.loc[cards_metric_df["Category"] == "Root Crops"]
-    roots_list = roots.Actual_Price.values
-    roots_val = get_val(roots, roots_list)
-
-    vegetables = cards_metric_df.loc[cards_metric_df["Category"]
-                                     == "Vegetable"]
-    vegetables_list = vegetables.Actual_Price.values
-    vegetables_val = get_val(vegetables, vegetables_list)
-
-    with cards1:
-        st.metric(label="Avg Fruits Price JMD / KG :apple:",
-                  value="$ " + str(fruits_val))
-
-    with cards2:
-        st.metric(label="Avg Herbs Price JMD / KG :herb:",
-                  value="$ " + str(herbs_val))
-
-    with cards3:
-        st.metric(label="Avg Legumes Price JMD / KG :corn:",
-                  value="$ " + str(legumes_val))
-
-    with cards4:
-        st.metric(label="Avg Roots Price JMD / KG :seedling:",
-                  value="$ " + str(roots_val))
-
-    with cards5:
-        st.metric(label="Avg Vegetables Price JMD / KG :tomato:",
-                  value="$ " + str(vegetables_val))
-
-    border_left_color: str = "#1F77B4",
-    box_shadow: bool = True,
-
-    style_metric_cards(border_left_color)
-
-    st.write("---")
-
-    # Row 2
-    # Chloropleth plot
-    with open('data/geojson.json') as f:
-        geojson = json.load(f)
-
-    df_parish = df.groupby(["parish"])['Actual_Price'].mean().reset_index()
-    df_parish = df_parish.round()
-
-    fig_chloro = px.choropleth(df_parish, geojson=geojson, color="Actual_Price",
-                               locations="parish", featureidkey="properties.woe_name",
-                               color_continuous_scale="Jet",
-                               range_color=(110, 300),
-                               labels={"parish": "Parish",
-                                       "Actual_Price": "Actual Price"}, width=600, height=450
-                               )
-    fig_chloro.update_geos(fitbounds="locations", visible=False)
-
-    fig_chloro.add_scattergeo(
-        geojson=geojson,
-        locations=df_parish['parish'],
-        text=df_parish['Actual_Price'],
-        featureidkey="properties.woe_name",
-        mode='text',
-    )
-    fig_chloro.update_layout(
-        plot_bgcolor="rgba(0,0,0,0)",
-        title_text="Total Price Average Price Distribution", title_x=0.5,
-        dragmode=False
-    )
-
-    # Plotting Highlight Bar Chart
-    df["month1"] = pd.to_datetime(df['price_date']).dt.month
-    df["month"] = pd.to_datetime(df['price_date']).dt.strftime('%b')
-    df["year"] = pd.to_datetime(df['price_date']).dt.year
-    df["month_year"] = pd.to_datetime(df['price_date']).dt.strftime('%b-%Y')
-
-    df_hp = df.groupby(["month", "month1"])[
-        'Actual_Price'].mean().reset_index()
-    df_hp["Actual_Price"] = [round(i) for i in df_hp["Actual_Price"]]
-    df_hp = df_hp.sort_values(["month1"], ascending=True)
-
-    df_hp = df_hp.reset_index(drop=True)
-
-    df_hp1 = df_hp.copy()
-
-    idx_list = []
-    num = 0
-    for i in range(5):
-        idx_list.append(df_hp1["Actual_Price"].idxmax())
-        df_hp1 = df_hp1.drop(idx_list[num])
-        num = num+1
-
-    colors = ['#1F77B4',] * len(df_hp)
-    colors[idx_list[0]] = '#BF1A2F'
-    colors[idx_list[1]] = '#ED6A5A'
-    colors[idx_list[2]] = '#ED6A5A'
-    colors[idx_list[3]] = '#E7BA52'
-    colors[idx_list[4]] = '#E7BA52'
-    # colors[idx_list[4:5]] = 'orange'
-
-    fig_hp = go.Figure(data=[go.Bar(
-        x=df_hp['month'],
-        y=df_hp['Actual_Price'],
-        marker_color=colors,
-        text=df_hp['Actual_Price'],
-        textposition='outside'  # marker color can be a single color value or an iterable
-    )])
-
-    fig_hp.update_layout(title_text='Avg price per KG / Month', title_x=0.5,
-                         plot_bgcolor="rgba(0,0,0,0)", yaxis=dict(
-                             title='Average Price $JMD'), width=300,
-                         height=300, margin=dict(l=5, r=5, t=68, b=0))
-    fig_hp.update_xaxes(showgrid=False, visible=True, fixedrange=True)
-    fig_hp.update_yaxes(showgrid=False, visible=True, fixedrange=True)
-
-    # Plottin Sunburst
-    df_seg = df.groupby(["supply", "grade", "commodity"])[
-        'Actual_Price'].mean().reset_index()
-
-    fig_sun = px.sunburst(df_seg, path=['supply', 'grade', 'commodity'],
-                          values='Actual_Price', color='supply',
-                          color_discrete_map={'Scarce': '#BF1A2F', 'Moderate': '#E7BA52', 'Fair': '#1F77B4',
-                                              'Average': '#8EB8E5', 'Good': '#6457A6', 'Abundant': '#4E937A'}, width=300, height=400)
-
-    fig_sun.update_layout(
-        title_text="Heirarchal Report by Abundance, Grade and Commodity", title_x=0.5)
-    fig_sun.update_traces(textinfo="label+percent parent"
-                          )
-
-    # Plotting by Column
-    row2_col1, row2_col2, row2_col3 = st.columns(3)
-
-    with row2_col1:
-        st.plotly_chart(fig_chloro, use_container_width=True,
-                        theme="streamlit")
-
-    with row2_col2:
-        st.plotly_chart(fig_hp, use_container_width=True, theme="streamlit")
-
-    with row2_col3:
-        st.plotly_chart(fig_sun, use_container_width=True, theme="streamlit")
-
-    # ROW 3
-
-    # Scatter and bar plot
-    df_avail = df.groupby(["price_date", "grade", "supply"])[
-        'Actual_Price'].mean().reset_index()
-
-    df_avail["grade1"] = [1 if i == "Average" else 2 if i ==
-                          "Good" else 3 for i in df_avail["grade"]]
-
-    df_avail = df_avail.round()
-
-    # df_avail0 = df.groupby(["month", "month1", "supply"])[ 'Actual_Price'].mean().reset_index()
-
-    df_avail0 = df.groupby(["year", "supply"])[
-        "Actual_Price"].mean().reset_index()
-
-    df_avail0 = df_avail0.sort_values(["year"], ascending=True)
-
-    df_avail0 = df_avail0.round()
-
-    df_avail1 = df.groupby(["year", "grade"])[
-        'Actual_Price'].mean().reset_index()
-
-    df_avail1 = df_avail1.sort_values(["year"], ascending=True)
-
-    df_avail1 = df_avail1.round()
-
-    df_supply = df.groupby(["month", "month1", "supply"])[
-        'Actual_Price'].mean().reset_index()
-
-    df_supply = df_supply.sort_values(["month1"], ascending=True)
-
-    df_supply = df_supply.round()
-
-    df_grade = df.groupby(["month", "month1", "grade"])[
-        'Actual_Price'].mean().reset_index()
-
-    df_grade = df_grade.sort_values(["month1"], ascending=True)
-
-    df_grade = df_grade.round()
-
-    # Line Plots
-    fig_line_sup = px.line(df_avail0, x="year",
-                           y="Actual_Price", color="supply")
-
-    fig_line_sup.update_layout(title_text='Average Price by Supply over Time', title_x=0.5,
-                               plot_bgcolor="rgba(0,0,0,0)", width=550,
-                               height=350)
-
-    fig_line_grade = px.line(df_avail1, x="year",
-                             y="Actual_Price", color="grade")
-
-    fig_line_grade.update_layout(title_text='Average Price by Grade over Time', title_x=0.5,
-                                 plot_bgcolor="rgba(0,0,0,0)", width=550,
-                                 height=350)
-
-    # stack bar plots
-
-    fig_stack_sup = px.bar(df_supply, x="month",
-                           y="Actual_Price", text_auto=True, color="supply")
-
-    fig_stack_sup.update_layout(title_text='Crop Price and Availability by Month', title_x=0.5,
-                                plot_bgcolor="rgba(0,0,0,0)", width=550,
-                                height=350)
-
-    fig_stack_grade = px.bar(
-        df_grade, x="month", y="Actual_Price", text_auto=True, color="grade")
-
-    fig_stack_grade.update_layout(title_text='Crop Price and Quality by Month', title_x=0.5,
-                                  plot_bgcolor="rgba(0,0,0,0)", width=550,
-                                  height=350)
-
-    # Pie Charts
-    fig_pie_sup = go.Figure(data=[go.Pie(
-        labels=df_avail["supply"].unique(), values=df_avail["Actual_Price"], hole=.6)])
-
-    fig_pie_sup.update_layout(title_text='Average Price by Supply', title_x=0.5,
-                              plot_bgcolor="rgba(0,0,0,0)", width=550,
-                              height=350)
-
-    fig_pie_grade = go.Figure(data=[go.Pie(
-        labels=df_avail["grade"].unique(), values=df_avail["Actual_Price"], hole=.6)])
-
-    fig_pie_grade.update_layout(title_text='Average Price by Quality', title_x=0.5,
-                                plot_bgcolor="rgba(0,0,0,0)", width=550,
-                                height=350)
-
-    # Scatter Plots for supply and grade reports
-
-    fig_supply = px.scatter(df_avail, x="price_date", y="Actual_Price", color="supply",
-                            size='Actual_Price')
-
-    fig_supply.update_layout(title_text='Average Price by Supply / Month', title_x=0.5,
-                             plot_bgcolor="rgba(0,0,0,0)", yaxis=dict(
-                                 title='Average Price $JMD'), width=550,
-                             height=350)
-    fig_supply.update_xaxes(showgrid=False, visible=True)
-    fig_supply.update_yaxes(showgrid=False, visible=True)
-
-    # quality plots
-    fig_quality = px.scatter(df_avail, x="price_date", y="Actual_Price", color="grade",
-                             size='Actual_Price')
-
-    fig_quality.update_layout(title_text='Average Price by Quality / Month', title_x=0.5,
-                              plot_bgcolor="rgba(0,0,0,0)", yaxis=dict(
-                                  title='Average Price $JMD'), width=550,
-                              height=350)
-    fig_quality.update_xaxes(showgrid=False, visible=True)
-    fig_quality.update_yaxes(showgrid=False, visible=True)
-
-    # Plotting Line Charts, Stack Bar Graphs and scatter plots Row3
-
-    tab1, tab2 = st.tabs(["Trends", "Price Distribution"])
-
-    with tab1:
-        row3_col1, row3_col2 = st.columns(2)
-
-        with row3_col1:
-            st.plotly_chart(fig_line_sup, theme="streamlit",
-                            use_container_width=True)
-
-        with row3_col2:
-            st.plotly_chart(fig_stack_sup, theme="streamlit",
-                            use_container_width=True)
-
-        with row3_col1:
-            st.plotly_chart(fig_line_grade, theme="streamlit",
-                            use_container_width=True)
-
-        with row3_col2:
-            st.plotly_chart(fig_stack_grade, theme="streamlit",
-                            use_container_width=True)
-
-    with tab2:
-        row3_col1, row3_col2 = st.columns(2)
-
-        with row3_col1:
-            st.plotly_chart(fig_supply, theme="streamlit",
-                            use_container_width=True)
-
-        with row3_col2:
-            st.plotly_chart(fig_pie_sup, theme="streamlit",
-                            use_container_width=True)
-
-        with row3_col1:
-            st.plotly_chart(fig_quality, theme="streamlit",
-                            use_container_width=True)
-
-        with row3_col2:
-            st.plotly_chart(fig_pie_grade, theme="streamlit",
-                            use_container_width=True)
-
-with st.container():
-    st.write("##")
-    st.write("##")
-    st.write("##")
-    st.write("##")
-    st.write("##")
-    st.write("##")
-    st.write("##")
-    st.write("---")
-    st.header("Youtube Expert Hour")
-    st.write("##")
-    image_column, text_column = st.columns((1, 2))
-    with image_column:
-        st.image(techtalk)
-    with text_column:
-        st.subheader("Tech Expert Hour")
-        st.write(
-            """This Tech Expert illustration shows how to establish data pipelines within the azure cloud platform. 
-               In this illustration I'll show you how to build data pipelines and more using azure data factory"""
-        )
-        st.markdown(
-            "[Watch Now...](https://www.youtube.com/watch?v=mWW-OsELCn0&t=1400s)")
-
-# ---- CONTACT ----
-with st.container():
-    st.write("---")
-    st.header("Contact Form")
-    st.write("##")
-
-    # Documentation: https://formsubmit.co/ !!!
-    contact_form = """
-    <form action="https://formsubmit.co/jc.samuels21@gmail.com" method="POST">
-     <input type="hidden" name="_captcha" value="false">
-     <input type="text" name="name" placeholder="Your name" required>
-     <input type="email" name="email" placeholder="Your email" required>
-     <textarea name="message" placeholder="Your message here" required></textarea>
-     <button type="submit">Send</button>
-</form>
-    """
-
-left_column, right_column = st.columns(2)
-with left_column:
-    st.markdown(contact_form, unsafe_allow_html=True)
-with right_column:
-    st.empty()
-
-
-hide_st_style = """
-                <style>
-                # MainMenu {visibility: hidden;}
-                footer{visibility: hidden;}
-                header{visibility:hidden;}
-                </style>
-                """
-
-st.markdown(hide_st_style, unsafe_allow_html=True)
-, Predictions.py import streamlit as st
-from pandas.tseries.offsets import MonthEnd
-import pandas as pd
-from PIL import Image
-import time
-import plotly.express as px
-
-
-st.set_page_config(page_title="Farmgate Prediction",
-                   layout="wide", page_icon="📈")
-
-# ---- LOAD Image -----
-techtalk = Image.open("images/Video.PNG")
-
-# ----- Load CSS
-
-
-def local_css(file_name):
-    with open(file_name) as f:
-        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-
-
-local_css("style/style.css")
-
-
-st.title("Simple Prediction Tool")
-
-st.write("---")
-
-
-@st.cache_data
-def get_data():
-    #AZ_BUCKET_URL = "https://azjcsdls01.blob.core.windows.net/farmgate/"
-    #df_pred = pd.read_csv(AZ_BUCKET_URL + "/predictions.csv")
-    df_pred = pd.read_csv('data/predictions.zip')
-    df_pred["month1"] = pd.to_datetime(df_pred['price_date']).dt.month
-    df_pred["month"] = pd.to_datetime(df_pred['price_date']).dt.strftime('%B')
-    df_pred["year"] = pd.to_datetime(df_pred['price_date']).dt.strftime('%Y')
-    df_pred["date_time"] = pd.to_datetime(
-        df_pred['price_date'], format="%Y-%m-%d") + MonthEnd(0)
-    df_pred = df_pred.loc[df_pred["year"] != '2022']
-    df_pred["price_date"] = pd.to_datetime(
-        df_pred['price_date'], format="%Y-%m-%d")
-    df_pred = df_pred.sort_values("price_date", ascending=True)
-    return df_pred
-
-
-with st.spinner('Loading'):
-    time.sleep(1)
-    df_pred = get_data()
-    years_list = [i for i in df_pred['year'].unique()]
-    parish_list = [i for i in df_pred['parish'].unique()]
-    parish_list.sort(reverse=False)
-
-    year = st.multiselect("Select Year", options=years_list, default="2023")
-    parish = st.multiselect(
-        "Select Parish", options=parish_list, default=parish_list[0:5])
-
-    if (year == []) | (parish == []):
-        st.error("Please select at least one value for Parish or Year")
-    else:
-        dff1 = df_pred.query('(parish ==@parish) & (year ==@year)')
-
-        dff = dff1.groupby(["year", "month", "month1", "parish", "commodity"])[
-            'Predicted_Price'].mean().reset_index()
-        dff = dff.sort_values(["month1"], ascending=True)
-
-        dff_pivot = dff.pivot_table(
-            values='Predicted_Price', index=dff.commodity, columns='month', aggfunc='first')
-
-        dff_pivot = dff_pivot[["January", "February", "March", "April", "May",
-                               "June", "July", "August", "September", "October", "November", "December"]]
-
-        dff_pivot = dff_pivot.round(2)
-
-        dff_pivot = dff_pivot.sort_index()
-
-        dff_chart = dff1.groupby(["date_time", "Category"])[
-            'Predicted_Price'].mean().reset_index()
-
-        dff_chart = dff_chart.round(2)
-
-        df_chart = dff_chart.sort_values(["date_time"], ascending=True)
-
-        fig = px.area(df_chart, x="date_time",
-                      y="Predicted_Price", color="Category")
-
-        fig.update_layout(title_text='Crop Category Predicted Price JMD per KG', title_x=0.5,
-                          plot_bgcolor="rgba(0,0,0,0)")
-
-        row1, row2, row3 = st.columns([0.15, 0.7, 0.15])
-
-        with row1:
-            st.empty()
-
-        with row2:
-            st.markdown("###### Predicted Average Crop Price in JMD per per month")
-            st.dataframe(dff_pivot)
-            st.plotly_chart(fig, theme="streamlit", use_container_width=True)
-
-        with row3:
-            st.empty()
-
-# *************************************************************************************************************
-
-with st.container():
-    st.write("---")
-    st.header("Youtube Expert Hour")
-    st.write("##")
-    image_column, text_column = st.columns((1, 2))
-    with image_column:
-        st.image(techtalk)
-    with text_column:
-        st.subheader("Tech Expert Hour")
-        st.write(
-            """This Tech Expert illustration shows how to establish data pipelines within the azure cloud platform. 
-               In this illustration I'll show you how to build data pipelines and more uwing azure data factory"""
-        )
-        st.markdown(
-            "[Watch Now...](https://www.youtube.com/watch?v=mWW-OsELCn0&t=1400s)")
-
-# ---- CONTACT ----
-with st.container():
-    st.write("---")
-    st.header("Contact Form")
-    st.write("##")
-
-    # Documentation: https://formsubmit.co/ !!!
-    contact_form = """
-    <form action="https://formsubmit.co/jc.samuels21@gmail.com" method="POST">
-     <input type="hidden" name="_captcha" value="false">
-     <input type="text" name="name" placeholder="Your name" required>
-     <input type="email" name="email" placeholder="Your email" required>
-     <textarea name="message" placeholder="Your message here" required></textarea>
-     <button type="submit">Send</button>
-</form>
-    """
-
-left_column, right_column = st.columns(2)
-with left_column:
-    st.markdown(contact_form, unsafe_allow_html=True)
-with right_column:
-    st.empty()
-
-hide_st_style = """
-                <style>
-                # MainMenu {visibility: hidden;}
-                footer{visibility: hidden;}
-                header{visibility:hidden;}
-                </style>
-                """
-
-st.markdown(hide_st_style, unsafe_allow_html=True)
- 
-
+├── data/              # Processed datasets for dashboard use
+│   ├── actual.csv
+│   ├── predictions.zip
+│   └── geojson.json
+│
+├── notebooks/          # Jupyter notebooks for exploration and testing
+│
+├── src/                # Core scripts for scraping and cleaning
+│   ├── scraper.py
+│   └── clean_data.py
+│
+├── dashboard/          # Streamlit dashboard pages
+│   ├── Home.py
+│   ├── Article.py
+│   ├── Analytics.py
+│   └── Predictions.py
+│
+├── style/              # CSS and theme styling
+│
+├── images/             # Visual assets for the dashboard
+│
+├── requirements.txt    # Python dependencies
+└── README.md
+```
+
+---
+
+## 🌐 Deployment
+
+The dashboard is deployed on **Streamlit Cloud** at
+➡️ [https://jamis-farmgate.streamlit.app/](https://jamis-farmgate.streamlit.app/)
+
+The live application provides users with:
+
+* Direct access to the **JAMIS-derived** datasets.
+* Dynamic filtering and drill-down capabilities.
+* Forecast reports for key crop categories.
+* Embedded **YouTube learning modules** (“Tech Expert Hour”) on data engineering and analytics.
+
+---
+
+## 📈 Example Use Cases
+
+* **Farmers:** Identify which crops have the most stable prices over time.
+* **Policy Makers:** Evaluate regional disparities and market inefficiencies.
+* **Researchers:** Study temporal and geospatial patterns in farmgate pricing.
+* **Educators:** Use as a practical example of applied data science in agriculture.
+
+---
+
+## 💡 Future Enhancements
+
+* Integration with **AWS Lambda or Azure Functions** for automated updates.
+* Addition of **machine learning models** for yield prediction.
+* **User authentication** for customized reports.
+* **API endpoints** for third-party data consumption.
+
+---
+
+## 🤝 Contact & Collaboration
+
+Contributions, bug reports, and feature suggestions are welcome!
+
+📩 **Email:** [jc.samuels21@gmail.com](mailto:jc.samuels21@gmail.com)
+🎥 **YouTube:** [Tech Expert Hour](https://www.youtube.com/watch?v=mWW-OsELCn0&t=1400s)
+🌐 **Live Dashboard:** [https://jamis-farmgate.streamlit.app/](https://jamis-farmgate.streamlit.app/)
+
+---
+
+Would you like me to also include a **“Getting Started” section** (with environment setup, installation, and run commands) so the README looks ready for GitHub open-source publication?
