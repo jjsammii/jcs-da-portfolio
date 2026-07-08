@@ -229,18 +229,6 @@ A custom implementation of a blockchain-inspired storage mechanism using linked 
 * Object-Oriented Programming
 * Data Structures
 
-### 🏗 Architecture
-
-```text
-[Block 1]
-    ↔
-[Block 2]
-    ↔
-[Block 3]
-    ↔
-[Block 4]
-```
-
 ### ⭐ Highlights
 
 ✅ Dynamic Block Creation
@@ -314,9 +302,9 @@ A custom implementation of a blockchain-inspired storage mechanism using linked 
 
 # 📫 Connect With Me
 
-* 💼 LinkedIn: *(Add LinkedIn URL)*
-* 📧 Email: *(Add Professional Email)*
-* 🌍 Portfolio: *(Add Portfolio URL)*
+* 💼 LinkedIn: *https://www.linkedin.com/in/jc-samuels-data-scientist01/*
+* 📧 Email: *jc.samuels21@gmail.com*
+
 
 ---
 
